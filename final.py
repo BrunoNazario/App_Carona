@@ -250,6 +250,56 @@ class Tela_DarCarona_PedirCarona:
         self.Tela_DarCarona_PedirCarona.tkraise()
         
         
+## TELA ENDEREÇO DA OPÇÃO DAR CARONA
+        
+
+class Tela_OferecerCarona:
+    def __init__(self, app):
+        self.app=app
+        self.Tela_OferecerCarona =tk.Frame(self.app.window)
+        self.Tela_OferecerCarona.rowconfigure(0, minsize=50)
+        self.Tela_OferecerCarona.rowconfigure(1, minsize=50)
+        self.Tela_OferecerCarona.rowconfigure(2, minsize=50)
+        self.Tela_OferecerCarona.rowconfigure(3, minsize=50)
+        self.Tela_OferecerCarona.rowconfigure(4, minsize=50)
+        self.Tela_OferecerCarona.rowconfigure(5, minsize=50)
+        self.Tela_OferecerCarona.columnconfigure(0, minsize=100)
+        self.Tela_OferecerCarona.columnconfigure(1, minsize=200)
+        self.Tela_OferecerCarona.grid(row=0, column=0, sticky="nsew")
+        
+        label_Bairro1 = tk.Label(self.Tela_OferecerCarona)
+        label_Bairro1.configure(text="Bairro :", fg='darkblue', font=('Arial','9'))
+        label_Bairro1.grid(row=2, column=0, sticky="nsew")
+        
+        self.Bairro1 = tk.Entry(self.Tela_OferecerCarona)
+        self.Bairro1.grid(row=2, column=1, padx=20, sticky="ew")
+        
+        label_Horario1 = tk.Label(self.Tela_OferecerCarona)
+        label_Horario1.configure(text="Horario :", fg='darkblue', font=('Arial','9'))
+        label_Horario1.grid(row=3, column=0, sticky="nsew")
+        
+        self.Horario1 = tk.Entry(self.Tela_OferecerCarona)
+        self.Horario1.grid(row=3, column=1, padx=20, sticky="ew")
+        
+        fonte1=('Arial','10')
+        botao_procurar_carona = tk.Button(self.Tela_OferecerCarona)
+        botao_procurar_carona.configure(text="Procurar carona", width=10, font=fonte1)
+        botao_procurar_carona.configure(command=self.botao_procurar_carona_clicado)
+        botao_procurar_carona.grid(row=4, column=1, sticky="nsew")
+        
+        
+    def botao_procurar_carona_clicado(self):
+        bairro = self.Bairro1.get()
+        horario = self.Horario1.get()
+        self.app.cadastro[usuario] = (senha, celular, email, bairro, horario)
+        with open('database.pickle', 'wb') as u:
+            pickle.dump(self.app.cadastro, u)
+        #self.app.mostra_tela()
+            
+    def mostra(self):
+        self.Tela_OferecerCarona.tkraise()
+                
+                
 
 
 app = AplicativoCarona()
