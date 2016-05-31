@@ -215,7 +215,42 @@ class Tela_Cadastro:
         self.tela_cadastrar.tkraise()
        
 
+# TELA DAR CARONA - PEDIR CARONA
+
+class Tela_DarCarona_PedirCarona:
+    def __init__(self, app):
+        self.app = app
         
+        self.Tela_DarCarona_PedirCarona = tk.Frame(self.app.window)
+        self.Tela_DarCarona_PedirCarona.rowconfigure(0, minsize=75)
+        self.Tela_DarCarona_PedirCarona.rowconfigure(1, minsize=50)
+        self.Tela_DarCarona_PedirCarona.rowconfigure(2, minsize=50)
+        self.Tela_DarCarona_PedirCarona.rowconfigure(3, minsize=50)
+        self.Tela_DarCarona_PedirCarona.rowconfigure(4, minsize=75)
+        self.Tela_DarCarona_PedirCarona.columnconfigure(0, minsize=300)
+        self.Tela_DarCarona_PedirCarona.grid(row=0, column=0, sticky="nsew")
+              
+        botao_dar_carona = tk.Button(self.Tela_DarCarona_PedirCarona)
+        botao_dar_carona.configure(text="Oferecer Carona")
+        botao_dar_carona.configure(command=self.botao_dar_carona_clicado)
+        botao_dar_carona.grid(row=2, column=0, sticky="nsew")
+        
+        botao_pedir_carona = tk.Button(self.Tela_DarCarona_PedirCarona)
+        botao_pedir_carona.configure(text='Pedir Carona')
+        botao_pedir_carona.configure(command=self.botao_pedir_carona_clicado)
+        botao_pedir_carona.grid(row=3, column=0, sticky="nsew")
+        
+    def botao_dar_carona_clicado(self):
+        self.app.mostra_DarCarona_PedirCarona()
+        
+    def botao_pedir_carona_clicado(self):
+        self.app.mostra_Tela_Procura_Carona()
+        
+    def mostra(self):
+        self.Tela_DarCarona_PedirCarona.tkraise()
+        
+        
+
 
 app = AplicativoCarona()
 app.iniciar()
