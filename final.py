@@ -14,8 +14,12 @@ import tkinter as tk
 
 class AplicativoCarona:
     def __init__(self):        
-        self.cadastro = {}
-        
+        try:
+            with open('database.pickle', 'rb') as u:
+                self.cadastro = pickle.load(u)
+        except:
+            self.cadastro = {}
+            
         self.window = tk.Tk()
         self.window.geometry("300x300")
         self.window.rowconfigure(0, minsize=300)
@@ -25,9 +29,9 @@ class AplicativoCarona:
         self.tela_entrar = Tela_Entrar(self)
         self.tela_cadastro = Tela_Cadastro(self)
         self.tela_DarCarona_PedirCarona = Tela_DarCarona_PedirCarona(self)
+        self.tela_oferecer_carona = Tela_OferecerCarona(self)
         self.tela_procura_carona = Tela_Procura_Carona(self)
-        with open('database.pickle', 'rb') as u:
-            self.cadastro = pickle.load(u)
+            
         self.mostra_tela_login()
 
     def iniciar(self):
@@ -46,6 +50,9 @@ class AplicativoCarona:
     def mostra_tela_DarCarona_PedirCarona(self):
         self.tela_DarCarona_PedirCarona.mostra()
     
+    def mostra_tela_Oferecer_Carona(self):
+        self.tela_oferecer_carona.mostra()
+
     def mostra_tela_Procura_Carona(self):
         self.tela_procura_carona.mostra()
 
@@ -95,9 +102,12 @@ class Tela_Login:
 class Tela_Entrar:
     def __init__(self, app):
         self.app = app
-        
-        with open('database.pickle', 'rb') as u:
-            self.cadastro = pickle.load(u)
+
+        try:        
+            with open('database.pickle', 'rb') as u:
+                self.cadastro = pickle.load(u)
+        except:
+            self.cadastro = {}
         
         self.tela_entrar = tk.Frame(self.app.window)
         self.tela_entrar.rowconfigure(0, minsize=50)
@@ -137,6 +147,7 @@ class Tela_Entrar:
             senha = self.senha1.get()            
             if senha == self.cadastro[nome][0] :
                 print("achei a senha")
+                self.app.usuario = nome
                 self.app.mostra_tela_DarCarona_PedirCarona()
         else:
              print("Cadastro inexistente")
@@ -205,7 +216,6 @@ class Tela_Cadastro:
         senha = self.senha.get()
         celular = self.celular.get()
         email = self.email.get()
-        
         self.app.cadastro[usuario] = (senha, celular, email)
         with open('database.pickle', 'wb') as u:
             pickle.dump(self.app.cadastro, u)
@@ -241,10 +251,10 @@ class Tela_DarCarona_PedirCarona:
         botao_pedir_carona.grid(row=3, column=0, sticky="nsew")
         
     def botao_dar_carona_clicado(self):
-        self.app.mostra_DarCarona_PedirCarona()
+        self.app.mostra_tela_Oferecer_Carona()
         
     def botao_pedir_carona_clicado(self):
-        self.app.mostra_Tela_Procura_Carona()
+        self.app.mostra_tela_Procura_Carona()
         
     def mostra(self):
         self.Tela_DarCarona_PedirCarona.tkraise()
@@ -289,9 +299,10 @@ class Tela_OferecerCarona:
         
         
     def botao_procurar_carona_clicado(self):
-        bairro = self.Bairro1.get()
-        horario = self.Horario1.get()
-        self.app.cadastro[usuario] = (senha, celular, email, bairro, horario)
+        bairro1 = self.Bairro1.get()
+        horario1 = self.Horario1.get()
+        dados_cadastrais = self.app.cadastro[self.app.usuario][:3]
+        self.app.cadastro[self.app.usuario] = dados_cadastrais + (bairro1, horario1)
         with open('database.pickle', 'wb') as u:
             pickle.dump(self.app.cadastro, u)
         #self.app.mostra_tela()
@@ -300,6 +311,59 @@ class Tela_OferecerCarona:
         self.Tela_OferecerCarona.tkraise()
                 
                 
+## TELA PROCURA CARONA
+        
+class Tela_Procura_Carona:
+    def __init__(self, app):
+        self.app = app
+         
+        self.tela_procura_carona = tk.Frame(self.app.window)
+        self.tela_procura_carona.rowconfigure(0, minsize=50)
+        self.tela_procura_carona.rowconfigure(1, minsize=50)
+        self.tela_procura_carona.rowconfigure(2, minsize=50)
+        self.tela_procura_carona.rowconfigure(3, minsize=50)
+        self.tela_procura_carona.rowconfigure(4, minsize=50)
+        self.tela_procura_carona.rowconfigure(5, minsize=50)
+        self.tela_procura_carona.columnconfigure(0, minsize=100)
+        self.tela_procura_carona.columnconfigure(1, minsize=200)
+        self.tela_procura_carona.grid(row=0, column=0, sticky="nsew")
+         
+         
+        label_Destino = tk.Label(self.tela_procura_carona)
+        label_Destino.configure(text="Destino :", fg='darkblue', font=('Arial','9'))
+        label_Destino.grid(row=1, column=0, sticky="nsew")
+         
+        self.destino = tk.Entry(self.tela_procura_carona)
+        self.destino.grid(row=1, column=1, padx=20, sticky="ew")
+         
+        label_Horario = tk.Label(self.tela_procura_carona)
+        label_Horario.configure(text="Horario:", fg='darkblue', font=('Arial','9'))
+        label_Horario.grid(row=2, column=0, sticky="nsew")
+         
+        self.horario = tk.Entry(self.tela_procura_carona)
+        self.horario.grid(row=2, column=1, padx=20, sticky="ew")
+         
+        fonte2=('Arial','10')
+        botao_procurar = tk.Button(self.tela_procura_carona)
+        botao_procurar.configure(text="Procurar ofertas", width=10, font=fonte2)
+        botao_procurar.configure(command=self.botao_procurar_clicado)
+        botao_procurar.grid(row=4, column=1, sticky="nsew")      
+         
+    def botao_procurar_clicado(self):
+        bairro = self.Bairro.get()
+        horario = self.Horario.get()
+        self.app.mosta_Procura_Carona()
+        
+    def mostra(self):
+        self.tela_procura_carona.tkraise()
+        
+## TELA FINAL
+        
+class Tela_Final:
+    def __init__(self, app):
+        self.app = app
+        self.tela_final = tk.Frame(self.app.window)
+        self.tela_final.rowconfigure(0, minsize=300)
 
 
 app = AplicativoCarona()
