@@ -62,7 +62,7 @@ class AplicativoCarona:
         self.tela_final.mostra()
         
     def mostra_Tela_Final2(self):
-        self.Tela_Final2.mostra
+        self.Tela_Final2.mostra()
 
 
 class Tela_Login:
@@ -304,19 +304,20 @@ class Tela_OferecerCarona:
         self.Horario1.grid(row=3, column=1, padx=20, sticky="ew")
         
         fonte1=('Arial','10')
-        botao_procurar_carona = tk.Button(self.Tela_OferecerCarona)
-        botao_procurar_carona.configure(text="Oferecer carona", width=10, font=fonte1)
-        botao_procurar_carona.configure(command=self.botao_procurar_carona_clicado)
-        botao_procurar_carona.grid(row=4, column=1, sticky="nsew")
+        botao_oferecer_carona = tk.Button(self.Tela_OferecerCarona)
+        botao_oferecer_carona.configure(text="Oferecer carona", width=10, font=fonte1)
+        botao_oferecer_carona.configure(command=self.botao_oferecer_carona_clicado)
+        botao_oferecer_carona.grid(row=4, column=1, sticky="nsew")
         
         
-    def botao_procurar_carona_clicado(self):
+    def botao_oferecer_carona_clicado(self):
         bairro1 = self.Bairro1.get()
         horario1 = self.Horario1.get()
         dados_cadastrais = self.app.cadastro[self.app.usuario][:3]
         self.app.cadastro[self.app.usuario] = dados_cadastrais + (bairro1, horario1)
         with open('database.pickle', 'wb') as u:
             pickle.dump(self.app.cadastro, u)
+        print('Carona Oferecida')            
         self.app.mostra_Tela_Final2()
             
     def mostra(self):
@@ -365,10 +366,10 @@ class Tela_Procura_Carona:
         local=[]
         local.append(self.destino)
         local.append(self.horario)
-        if local[0] in self.app.cadastro.usuario:
-            for pessoa in self.app.cadastro.usuario:
-                self.app.cadastro.usuario = self.app.motorista
-                self.app.cadastro.usuario[1] = self.app.contato
+        if local[0] in self.app.cadastro[self.app.usuario] and local[1] in self.app.cadastro[self.app.usuario]:
+            for pessoa in self.app.cadastro[self.app.usuario]:
+                self.app.cadastro[self.app.usuario] = self.app.motorista
+                self.app.cadastro[self.app.usuario][1] = self.app.contato
             print("tem carona!")
             self.app.mostra_tela_Final()
         else:
@@ -387,7 +388,14 @@ class Tela_Final:
         self.tela_final.rowconfigure(0, minsize=300)
         self.tela_final.columnconfigure(0, minsize=300)
         self.tela_final.grid(row=0, column=0, sticky="nsew")
-        texto = tk.Label(text = self.app.Tela_Procura_Carona.motorista ',' self.app.Tela_Procura_Carona.horario )
+        
+        
+        texto = tk.Label(self.tela_final)
+        texto.configure(text='self.app.Tela_Procura_Carona.motorista ,self.app.Tela_Procura_Carona.contato ', fg='black', font=('Arial', '9') )
+        texto.grid(row=0, column=0, sticky="nsew")
+        
+    def mostra(self):
+        self.tela_final.tkraise()
         
 
 class Tela_Final2:
@@ -398,7 +406,12 @@ class Tela_Final2:
         self.Tela_Final2.rowconfigure(0, minsize=300)
         self.Tela_Final2.columnconfigure(0, minsize=300)
         self.Tela_Final2.grid(row=0, column=0, sticky="nsew")
-        texto = tk.Label(text ='O passageiro entra em contato')
+        
+        texto = tk.Label(self.Tela_Final2)
+        texto.configure(text='O passageiro entrará em contato', fg='black', font=('Arial', '14') )
+        texto.grid(row=0, column=0, sticky="nsew")
+        
+        
         
     def mostra(self):
         self.Tela_Final2.tkraise()
