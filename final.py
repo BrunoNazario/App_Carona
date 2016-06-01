@@ -363,17 +363,22 @@ class Tela_Procura_Carona:
         botao_procurar.grid(row=4, column=1, sticky="nsew")      
          
     def botao_procurar_clicado(self):
-        local=[]
-        local.append(self.destino)
-        local.append(self.horario)
-        if local[0] in self.app.cadastro[self.app.usuario] and local[1] in self.app.cadastro[self.app.usuario]:
-            for pessoa in self.app.cadastro[self.app.usuario]:
-                self.app.cadastro[self.app.usuario] = self.app.motorista
-                self.app.cadastro[self.app.usuario][1] = self.app.contato
-            print("tem carona!")
-            self.app.mostra_tela_Final()
-        else:
-             print("sem caronas!")
+#        local=[]
+        destino = self.destino.get()
+        horario = self.horario.get()
+#        local.append(destino)
+#        local.append(horario)
+        with open('database.pickle', 'rb') as u:
+            x = pickle.load(u)
+            if destino in x :
+                print('encontrou destino')
+                for pessoa in u:
+                    self.app.cadastro[self.app.usuario] = self.app.motorista
+                    self.app.cadastro[self.app.usuario][1] = self.app.contato
+                print("tem carona!")
+                self.app.mostra_tela_Final()
+            else:
+                print("sem caronas!")
         
     def mostra(self):
         self.tela_procura_carona.tkraise()
