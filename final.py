@@ -31,6 +31,8 @@ class AplicativoCarona:
         self.tela_DarCarona_PedirCarona = Tela_DarCarona_PedirCarona(self)
         self.tela_oferecer_carona = Tela_OferecerCarona(self)
         self.tela_procura_carona = Tela_Procura_Carona(self)
+        self.tela_final = Tela_Final(self)
+        self.Tela_Final2 = Tela_Final2(self)
             
         self.mostra_tela_login()
 
@@ -55,13 +57,23 @@ class AplicativoCarona:
 
     def mostra_tela_Procura_Carona(self):
         self.tela_procura_carona.mostra()
+        
+    def mostra_tela_Final(self):
+        self.tela_final.mostra()
+        
+    def mostra_Tela_Final2(self):
+        self.Tela_Final2.mostra
 
 
 class Tela_Login:
     def __init__(self, app):
         self.app = app
 
-        
+        try:
+            with open('database.pickle', 'rb') as u:
+                self.cadastro = pickle.load(u)
+        except:
+            self.cadastro = {}
         self.tela_login = tk.Frame(self.app.window)
         self.tela_login.rowconfigure(0, minsize=75)
         self.tela_login.rowconfigure(1, minsize=50)
@@ -293,7 +305,7 @@ class Tela_OferecerCarona:
         
         fonte1=('Arial','10')
         botao_procurar_carona = tk.Button(self.Tela_OferecerCarona)
-        botao_procurar_carona.configure(text="Procurar carona", width=10, font=fonte1)
+        botao_procurar_carona.configure(text="Oferecer carona", width=10, font=fonte1)
         botao_procurar_carona.configure(command=self.botao_procurar_carona_clicado)
         botao_procurar_carona.grid(row=4, column=1, sticky="nsew")
         
@@ -305,7 +317,7 @@ class Tela_OferecerCarona:
         self.app.cadastro[self.app.usuario] = dados_cadastrais + (bairro1, horario1)
         with open('database.pickle', 'wb') as u:
             pickle.dump(self.app.cadastro, u)
-        #self.app.mostra_tela()
+        self.app.mostra_Tela_Final2()
             
     def mostra(self):
         self.Tela_OferecerCarona.tkraise()
@@ -350,9 +362,17 @@ class Tela_Procura_Carona:
         botao_procurar.grid(row=4, column=1, sticky="nsew")      
          
     def botao_procurar_clicado(self):
-        bairro = self.Bairro.get()
-        horario = self.Horario.get()
-        self.app.mosta_Procura_Carona()
+        local=[]
+        local.append(self.destino)
+        local.append(self.horario)
+        if local[0] in self.app.cadastro.usuario:
+            for pessoa in self.app.cadastro.usuario:
+                self.app.cadastro.usuario = self.app.motorista
+                self.app.cadastro.usuario[1] = self.app.contato
+            print("tem carona!")
+            self.app.mostra_tela_Final()
+        else:
+             print("sem caronas!")
         
     def mostra(self):
         self.tela_procura_carona.tkraise()
@@ -360,11 +380,28 @@ class Tela_Procura_Carona:
 ## TELA FINAL
         
 class Tela_Final:
+    
     def __init__(self, app):
         self.app = app
         self.tela_final = tk.Frame(self.app.window)
         self.tela_final.rowconfigure(0, minsize=300)
+        self.tela_final.columnconfigure(0, minsize=300)
+        self.tela_final.grid(row=0, column=0, sticky="nsew")
+        texto = tk.Label(text = self.app.Tela_Procura_Carona.motorista ',' self.app.Tela_Procura_Carona.horario )
+        
 
-
+class Tela_Final2:
+    
+    def __init__(self, app):
+        self.app = app
+        self.Tela_Final2 = tk.Frame(self.app.window)
+        self.Tela_Final2.rowconfigure(0, minsize=300)
+        self.Tela_Final2.columnconfigure(0, minsize=300)
+        self.Tela_Final2.grid(row=0, column=0, sticky="nsew")
+        texto = tk.Label(text ='O passageiro entra em contato')
+        
+    def mostra(self):
+        self.Tela_Final2.tkraise()
+    
 app = AplicativoCarona()
 app.iniciar()
