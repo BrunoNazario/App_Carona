@@ -33,6 +33,8 @@ class AplicativoCarona:
         self.tela_procura_carona = Tela_Procura_Carona(self)
         self.tela_final = Tela_Final(self)
         self.Tela_Final2 = Tela_Final2(self)
+        
+        self.caronas = []
             
         self.mostra_tela_login()
 
@@ -155,10 +157,10 @@ class Tela_Entrar:
         
     def botao_entrando_clicado(self):
         nome = self.nome1.get()        
-        if nome in self.cadastro:
+        if nome in self.app.cadastro:
             print("achei o usuario")
             senha = self.senha1.get()            
-            if senha == self.cadastro[nome][0] :
+            if senha == self.app.cadastro[nome][0] :
                 print("achei a senha")
                 self.app.usuario = nome
                 self.app.mostra_tela_DarCarona_PedirCarona()
@@ -366,14 +368,20 @@ class Tela_Procura_Carona:
     def botao_procurar_clicado(self):
         destino = self.destino.get()
         horario = self.horario.get()
-        with open('database.pickle', 'rb') as u:
-            x = pickle.load(u)
-            for i in x:
-                if destino and horario in x.items() :
+        for i in self.app.cadastro:
+            print(i)
+            if len(self.app.cadastro[i]) == 5:
+                if destino == self.app.cadastro[i][3] and horario == self.app.cadastro[i][4]:
                     print("tem carona!")
+                    print(dir(self.app))
+                    self.app.caronas.append('{0} : {1}'.format(i, self.app.cadastro[i][1]))
+                    print(self.app.caronas)
                     self.app.mostra_tela_Final()
                 else:
                     print("sem caronas!")
+            else:
+                print("sem caronas!")
+           
         
     def mostra(self):
         self.tela_procura_carona.tkraise()
@@ -389,9 +397,9 @@ class Tela_Final:
         self.tela_final.columnconfigure(0, minsize=300)
         self.tela_final.grid(row=0, column=0, sticky="nsew")
         
-        
+        print(dir(self.app))
         texto = tk.Label(self.tela_final)
-        texto.configure(text='self.app.Tela_Procura_Carona.motorista ,self.app.Tela_Procura_Carona.contato ', fg='black', font=('Arial', '9') )
+        texto.configure(text= "{0} ".format(self.app.caronas))
         texto.grid(row=0, column=0, sticky="nsew")
         
     def mostra(self):
